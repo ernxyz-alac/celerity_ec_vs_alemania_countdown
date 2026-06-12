@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Countdown - CIV vs ECU</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+        }
+        
+        @font-face {
+            font-family: "Bold Font";
+            src: url("./font/bold.ttf");
+        }
+
+        html, body {
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+            background-color: #000;
+        }
+
+        body {
+            font-family: "Bold Font";
+            color: white;
+        }
+
+        /* HIGHLIGHT: Container for the background image */
+        #background-img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            z-index: 0;
+        }
+
+        #main-container {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* HIGHLIGHT: Container for the countdown text */
+        .countdown-container {
+            position: absolute;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 100%;
+            text-align: left;
+            line-height: 1.1;
+            text-shadow: 4px 4px 10px rgba(0,0,0,0.8);
+
+            /* EASY POSITIONING: Adjust these to move the block */
+            top: 0;
+            left: 0;
+        }
+
+        /* HIGHLIGHT: Colors for countdown elements */
+        .highlight-today, #days-number { color: #00e5ff; }
+
+        #match-teams-container {
+            position: absolute;
+            display: flex;
+            justify-content: center;
+            align-items: flex-end; /* Align to bottom so flags stay aligned */
+            gap: 15px; /* Reduced gap */
+            z-index: 3;
+            width: 100%;
+        }
+        .team-col {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+            min-width: 100px;
+        }
+        .team-flag {
+            border-radius: 50%;
+            border: 3px solid white;
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            order: 2; /* Ensure flag is below text */
+            margin-top: 10px;
+        }
+        .team-name {
+            font-size: 16px;
+            text-transform: uppercase;
+            text-align: center;
+            order: 1; /* Ensure text is above flag */
+            white-space: normal; /* Allow wrapping */
+        }
+        .vs-text {
+            font-size: 30px;
+            font-weight: bold;
+            color: white;
+            margin-bottom: 25px; /* Align with flag vertical center */
+        }
+
+
+        #faltan-text, #days-text, #hoy-text, #se-juega-text {
+            position: absolute;
+        }
+
+        /* Specific CSS for Horizontal Screen (768x320) */
+        @media (width: 768px) and (height: 320px) {
+            #match-teams-container {
+                top: 12%;
+                left: 35%;
+            }
+            #local-team {
+                position: absolute;
+                left: 18%;
+            }
+            .countdown-container {
+                font-size: 30px;
+                text-align: left;
+                /* Adjust positioning here: */
+                top: 10%; 
+                left: 33%;
+            }
+
+            #faltan-text {
+                top: 45.5%;
+                left: 33%;
+                font-size: 30px;
+            }
+
+            #days-text {
+                top: 53%;
+                left: 38%;
+                font-size: 30px;
+            }
+
+            #days-number{
+                font-size: 70px;
+            }
+
+            .singular-days{
+                left: 42% !important;
+            }
+
+            #hoy-text {
+                top: 44%;
+                left: 33%;
+                font-size: 60px;
+
+                display: inline-block; /* Necesario para transform */
+                transform: scaleX(1.2); /* 1.5 = 150% del ancho original */
+                transform-origin: left center; /* Controla el punto de anclaje */
+            }
+            #se-juega-text{
+                top: 63%;
+                left: 33%;
+                font-size: 30px;
+            }
+        }
+
+        /* Specific CSS for Vertical Screen (600x800) */
+        @media (width: 600px) and (height: 800px) {
+            #match-teams-container {
+                top: 60%;
+                left: 32%;
+            }
+            #local-team {
+                position: absolute;
+                left: 10%;
+            }
+            .countdown-container {
+                font-size: 30px;
+                text-align: left;
+                /* Adjust positioning here: */
+                top: 35%; 
+                left: 25%;
+            }
+
+            #faltan-text {
+                top: 45%;
+                left: 32.5%;
+                font-size: 30px;
+            }
+
+            #days-text {
+                top: 48%;
+                left: 40%;
+                font-size: 30px;
+            }
+
+            #days-number{
+                font-size: 70px;
+            }
+
+            .singular-days{
+                left: 45% !important;
+            }
+
+            #hoy-text {
+                top: 44%;
+                left: 33%;
+                font-size: 60px;
+
+                display: inline-block; /* Necesario para transform */
+                transform: scaleX(1.2); /* 1.5 = 150% del ancho original */
+                transform-origin: left center; /* Controla el punto de anclaje */
+            }
+            #se-juega-text{
+                top: 51%;
+                left: 33%;
+                font-size: 30px;
+            }
+        }
+        /* Fallback for other sizes (Responsive) */
+        @media not all and (width: 768px) and (height: 320px) {
+            @media not all and (width: 600px) and (height: 800px) {
+                #match-teams-container {
+                    top: 12%;
+                    left: 35%;
+                }
+                #local-team {
+                    position: absolute;
+                    left: 18%;
+                }
+                .countdown-container {
+                    font-size: 30px;
+                    text-align: left;
+                    /* Adjust positioning here: */
+                    top: 11%; 
+                    left: 34%;
+                }
+
+                #faltan-text {
+                    top: 45.5%;
+                    left: 33%;
+                    font-size: 30px;
+                }
+
+                #days-text {
+                    top: 53%;
+                    left: 38%;
+                    font-size: 30px;
+                }
+
+                #days-number{
+                    font-size: 70px;
+                }
+
+                .singular-days{
+                    left: 42% !important;
+                }
+
+                #hoy-text {
+                    top: 44%;
+                    left: 33%;
+                    font-size: 60px;
+
+                    display: inline-block; /* Necesario para transform */
+                    transform: scaleX(1.2); /* 1.5 = 150% del ancho original */
+                    transform-origin: left center; /* Controla el punto de anclaje */
+                }
+                #se-juega-text{
+                    top: 63%;
+                    left: 33%;
+                    font-size: 30px;
+                }
+            }
+        }
+    </style>
+</head>
+<body>
+<div id="main-container">
+    <div id="background-img"></div>
+
+    <div id="match-teams-container">
+        <div id="local-team" class="team-col">
+            <img src="https://flagcdn.com/w160/ci.png" alt="CIV" class="team-flag">
+            <div class="team-name">COSTA DE MARFIL</div>
+        </div>
+        <div class="vs-text">VS</div>
+        <div class="team-col">
+            <img src="https://flagcdn.com/w160/ec.png" alt="ECU" class="team-flag">
+            <div class="team-name">ECUADOR</div>
+        </div>
+    </div>
+
+    <div id="mainCard" class="countdown-container">
+        <div id="faltan-text">Faltan</div>
+        <div id="days-text" class="highlight-number">
+            <span id="days-number">0</span> días
+        </div>
+
+        <div id="hoy-text" class="highlight-today" style="display: none;">HOY</div>
+        <div id="se-juega-text" style="display: none;">SE JUEGA</div>
+    </div>
+</div>
+
+<script>
+    /**
+     * Logic for Screen Size and Image Selection:
+     */
+    function updateBackground() {
+        const bg = document.getElementById('background-img');
+        const width = window.innerWidth;
+        const height = window.innerHeight;
+        
+        let imgSrc = "";
+        if (width === 768 && height === 320) {
+            imgSrc = "./img/horizontal.png";
+        } else if (width === 600 && height === 800) {
+            imgSrc = "./img/vertical.png";
+        } else {
+            imgSrc = (height > width) ? "./img/vertical.png" : "./img/horizontal.png";
+        }
+
+        bg.style.backgroundImage = `url('${imgSrc}')`;
+    }
+
+    updateBackground();
+    window.addEventListener('resize', updateBackground);
+
+    /**
+     * Countdown Logic:
+     * Match: June 14th, 2026, 06:00 PM Guayaquil Time (GMT-5)
+     */
+    function updateCountdown() {
+        // Target: June 14th, 2026
+        const targetDate = new Date("2026-06-14T00:00:00-05:00");
+
+        // Current: Today, normalized to midnight for accurate day difference
+        const now = new Date();
+        const todayAtMidnight = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+        // Calculate difference in milliseconds
+        const diffTime = targetDate - todayAtMidnight;
+
+        // Calculate days left
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+        const faltanEl = document.getElementById("faltan-text");
+        const daysEl = document.getElementById("days-text");
+        
+        const seJuegaEl = document.getElementById("se-juega-text");
+        const hoyEl = document.getElementById("hoy-text");
+
+        // Check if it's the day of the match
+        const isMatchDay = diffDays === 0;
+
+        if (diffDays > 0) {
+            // Future, show countdown
+            faltanEl.textContent = diffDays === 1 ? "FALTA" : "FALTAN";
+            daysEl.innerHTML = `<span id="days-number">${diffDays}</span> ${diffDays === 1 ? "DÍA" : "DÍAS"}`;
+            if(diffDays === 1) daysEl.classList.add('singular-days')
+
+            faltanEl.style.display = 'block';
+            daysEl.style.display = 'block';
+            seJuegaEl.style.display = 'none';
+            hoyEl.style.display = 'none';
+        } else {
+            // Match day or passed, show Empieza HOY
+            faltanEl.style.display = 'none';
+            daysEl.style.display = 'none';
+            seJuegaEl.style.display = 'block';
+            hoyEl.style.display = 'block';
+        }
+    }
+    updateCountdown();
+    // Update every minute
+    setInterval(updateCountdown, 60000);
+</script>
+</body>
+</html>
