@@ -299,8 +299,12 @@
      */
     function updateBackground() {
         const bg = document.getElementById('background-img');
-        const width = window.innerWidth;
-        const height = window.innerHeight;
+        const params = new URLSearchParams(window.location.search);
+        const widthParam = params.get('width');
+        const heightParam = params.get('height');
+
+        const width = widthParam ? parseInt(widthParam) : window.innerWidth;
+        const height = heightParam ? parseInt(heightParam) : window.innerHeight;
         
         let imgSrc = "";
         if (width === 768 && height === 320) {
