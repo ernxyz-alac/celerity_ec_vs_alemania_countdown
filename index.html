@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Countdown - CIV vs ECU</title>
+    <title>Countdown - ECU vs GER</title>
     <style>
         * {
             margin: 0;
@@ -118,11 +118,7 @@
         @media (width: 768px) and (height: 320px) {
             #match-teams-container {
                 top: 12%;
-                left: 35%;
-            }
-            #local-team {
-                position: absolute;
-                left: 18%;
+                left: 27%;
             }
             .countdown-container {
                 font-size: 30px;
@@ -172,11 +168,7 @@
         @media (width: 600px) and (height: 800px) {
             #match-teams-container {
                 top: 60%;
-                left: 32%;
-            }
-            #local-team {
-                position: absolute;
-                left: 10%;
+                left: 22%;
             }
             .countdown-container {
                 font-size: 30px;
@@ -226,11 +218,7 @@
             @media not all and (width: 600px) and (height: 800px) {
                 #match-teams-container {
                     top: 12%;
-                    left: 35%;
-                }
-                #local-team {
-                    position: absolute;
-                    left: 18%;
+                    left: 28%;
                 }
                 .countdown-container {
                     font-size: 30px;
@@ -284,13 +272,13 @@
 
     <div id="match-teams-container">
         <div id="local-team" class="team-col">
-            <img src="https://flagcdn.com/w160/ci.png" alt="CIV" class="team-flag">
-            <div class="team-name">COSTA DE MARFIL</div>
+            <img src="https://flagcdn.com/w160/ec.png" alt="ECU" class="team-flag">
+            <div class="team-name">ECUADOR</div>
         </div>
         <div class="vs-text">VS</div>
         <div class="team-col">
-            <img src="https://flagcdn.com/w160/ec.png" alt="ECU" class="team-flag">
-            <div class="team-name">ECUADOR</div>
+            <img src="https://flagcdn.com/w160/de.png" alt="GER" class="team-flag">
+            <div class="team-name">ALEMANIA</div>
         </div>
     </div>
 
@@ -335,7 +323,7 @@
      */
     function updateCountdown() {
         // Target: June 14th, 2026
-        const targetDate = new Date("2026-06-14T00:00:00-05:00");
+        const targetDate = new Date("2026-06-25T00:00:00-05:00");
 
         // Current: Today, normalized to midnight for accurate day difference
         const now = new Date();
